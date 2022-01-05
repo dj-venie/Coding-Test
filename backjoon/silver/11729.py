@@ -19,5 +19,18 @@
 
 n = int(input())
 
+k = 2**n - 1
+print(k)
 def move(n, start, end):
-    pass
+    if n==1:
+        return [(start,end)]
+    move_list = []
+    mid = 6-start-end
+    move_list += move(n-1, start, mid)
+    move_list += [(start,end)]
+    move_list += move(n-1, mid, end)
+    return move_list
+
+result = move(n, 1, 3)
+for r in result:
+    print(r[0],r[1])
