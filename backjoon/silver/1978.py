@@ -12,16 +12,13 @@
 def check_prime(n):
     if n == 1:
         return 0
-    for i in range(1,int(n**0.5)):
+    for i in range(2,int(n**0.5)+1):
         if n%i==0:
             return 0
     return 1
 
 n = int(input())
-l = list(map(int, input().split()))
-
 answer = 0
-for ll in l:
-    print(check_prime(ll))
-    answer += check_prime(ll)
+for i in map(int, input().split()):
+    answer += check_prime(i)
 print(answer)
