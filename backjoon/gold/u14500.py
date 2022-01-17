@@ -38,5 +38,5 @@
 #             t = []
 #             if i-1
 import os
-print(len(os.listdir("D:/data/test/"))/32)
+print(len(os.listdir("D:/data/test/"))/128)
 
