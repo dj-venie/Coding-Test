@@ -32,72 +32,124 @@
 
 스도쿠 판을 채우는 방법이 여럿인 경우는 그 중 하나만을 출력한다.
 """
+# sudoku = []
+# for _ in range(9):
+#     sudoku.append(list(map(int,input().split())))
+
+# zeros = {}
+# for i in range(9):
+#     for j in range(9):
+#         if sudoku[i][j]==0:
+#             zeros[(i,j)] = set(range(1,10))
+# while zeros:
+
+#     # vertical check
+#     for j in range(9):
+#         numbers = set(range(1,10))
+#         t_zero = []
+#         for i in range(9):
+#             now = sudoku[i][j]
+#             if now:
+#                 numbers.remove(now)
+#             else:
+#                 t_zero.append((i,j))
+#         for zero in t_zero:
+#             zeros[zero].intersection_update(numbers)
+
+#     # horizontal check
+#     for i in range(9):
+#         numbers = set(range(1,10))
+#         t_zero = []
+#         for j in range(9):
+#             now = sudoku[i][j]
+#             if now:
+#                 numbers.remove(now)
+#             else:
+#                 t_zero.append((i,j))
+#         for zero in t_zero:
+#             zeros[zero].intersection_update(numbers)
+
+#     # box check
+#     for i in range(9):
+#         numbers = set(range(1,10))
+#         t_zero = []
+
+#         box_y = (i//3)*3
+#         box_x = (i%3)*3
+#         for j in range(9):
+
+#             now_y = (j//3)
+#             now_x = (j%3)
+            
+#             y,x = box_y+now_y, box_x+now_x
+#             now = sudoku[y][x]
+#             if now:
+#                 numbers.remove(now)
+#             else:
+#                 t_zero.append((y,x))
+
+#         for zero in t_zero:
+#             zeros[zero].intersection_update(numbers)
+#     new_zeros = {}
+#     for zero, cand in zeros.items():
+#         if len(cand)==1:
+#             y,x = zero
+#             sudoku[y][x] = cand.pop()
+
+#         else:
+#             new_zeros[zero] = cand
+#     zeros = new_zeros
+
+# for line in sudoku:
+#     print(" ".join(map(str,line)))
+# 전부 빈칸인 경우 해결x
+
 sudoku = []
 for _ in range(9):
     sudoku.append(list(map(int,input().split())))
 
-zeros = {}
-for i in range(9):
-    for j in range(9):
-        if sudoku[i][j]==0:
-            zeros[(i,j)] = set(range(1,10))
-while zeros:
-
-    # vertical check
-    for j in range(9):
-        numbers = set(range(1,10))
-        t_zero = []
-        for i in range(9):
-            now = sudoku[i][j]
-            if now:
-                numbers.remove(now)
-            else:
-                t_zero.append((i,j))
-        for zero in t_zero:
-            zeros[zero].intersection_update(numbers)
-
-    # horizontal check
-    for i in range(9):
-        numbers = set(range(1,10))
-        t_zero = []
-        for j in range(9):
-            now = sudoku[i][j]
-            if now:
-                numbers.remove(now)
-            else:
-                t_zero.append((i,j))
-        for zero in t_zero:
-            zeros[zero].intersection_update(numbers)
-
-    # box check
-    for i in range(9):
-        numbers = set(range(1,10))
-        t_zero = []
-
-        box_y = (i//3)*3
-        box_x = (i%3)*3
-        for j in range(9):
-
-            now_y = (j//3)
-            now_x = (j%3)
-            
-            y,x = box_y+now_y, box_x+now_x
-            now = sudoku[y][x]
-            if now:
-                numbers.remove(now)
-            else:
-                t_zero.append((y,x))
-
-        for zero in t_zero:
-            zeros[zero].intersection_update(numbers)
-    new_zeros = {}
-    for zero, cand in zeros.items():
-        if len(cand)==1:
-            y,x = zero
-            sudoku[y][x] = cand.pop()
-
+def find(sudoku, x,y):
+    while y<9:
+        if sudoku[y][x]:
+            x,y = (x+1)%9, y+(x+1)//9
         else:
-            new_zeros[zero] = cand
-    zeros = new_zeros
+            break
 
-print(sudoku)
+    if y==9:
+        return sudoku
+    nx,ny = (x+1)%9, y+(x+1)//9
+    sudoku = [s.copy() for s in sudoku]
+    cand = set(range(1,10))
+
+    # check horizontal
+    cand -= set(sudoku[y])
+
+    # check vertical
+    v = set()
+    for i in range(9):
+        v.add(sudoku[i][x])
+    cand -= v
+
+    # check box
+    b = set()
+    box_x = (x//3)*3
+    box_y = (y//3)*3
+
+    for i in range(3):
+        for j in range(3):
+            b.add(sudoku[box_y+j][box_x+i])
+    cand -= b
+    for c in cand:
+        sudoku[y][x] = c
+        ret = find(sudoku, nx, ny)
+        if ret:
+            return ret
+
+    return False
+
+sudoku = find(sudoku, 0,0)
+
+for line in sudoku:
+    print(" ".join(map(str,line)))
+
+# 시간 초과?
