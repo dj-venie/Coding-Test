@@ -36,7 +36,7 @@ for _ in range(n):
             row2[i]='G'
     maps2.append(row2)
 result = []
-for i in range(n):
+for i in range(n):  
     for j in range(n):
         if maps[i][j]:
             now = maps[i][j]
