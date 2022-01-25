@@ -59,10 +59,6 @@ for _ in range(n):
                                 tcache.add((i-1,j))
                                 box[i-1][j] = 0
                     cache = tcache
-                    
-    result_list.append(count)
 
-for r in result_list:
-    print(r)
-
+    print(count)
 
