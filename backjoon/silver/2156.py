@@ -18,11 +18,20 @@
 n = int(input())
 
 result = 0
-if n<=3:
+if n<3:
     for _ in range(n):
         result += int(input())
 else:
-    for _ in range(3):
-        for _ in range(n):
-            break
-
+    ox = int(input())
+    xo = int(input())
+    oo = ox + xo
+    xx = 0
+    for _ in range(n-2):
+        now = int(input())
+        new_ox = max(xo,oo)
+        new_xo = max(ox,xx) + now
+        new_oo = xo+now
+        new_xx = max(ox,xx)
+        ox,xo,oo,xx = new_ox,new_xo,new_oo,new_xx
+    result = max(ox,xo,oo,xx)
+print(result)
