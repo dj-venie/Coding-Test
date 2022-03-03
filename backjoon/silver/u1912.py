@@ -10,17 +10,35 @@ n개의 정수로 이루어진 임의의 수열이 주어진다. 우리는 이 �
 출력
 첫째 줄에 답을 출력한다.
 """
-import sys
+# import sys
 
-n = int(sys.stdin.readline())
-l = list(map(int, sys.stdin.readline().split()))
+# n = int(sys.stdin.readline())
+# l = list(map(int, sys.stdin.readline().split()))
 
-answer = float('-inf')
-now = l[0]
-for i in l[1:]:
-    now += i
-    if i < 0:
-        answer = max(answer,now-i)
-        if now < 0:
-            now = 0
-print(answer)
+# answer = float('-inf')
+# now = l[0]
+# for i in l[1:]:
+#     now += i
+#     if i < 0:
+#         answer = max(answer,now-i)
+#         if now < 0:
+#             now = 0
+# print(answer)
+
+n = int(input())
+
+l = list(map(int, input().split()))
+
+m = max(l)
+if m<0:
+    print(m)
+else:
+    answer = 0
+    cache = 0
+    for i in l:
+        answer = max(cache+i, answer)
+        if cache+i>0:
+            cache +=i
+        else:
+            cache = 0
+    print(answer)
