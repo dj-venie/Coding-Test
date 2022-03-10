@@ -104,52 +104,98 @@
 #     print(" ".join(map(str,line)))
 # 전부 빈칸인 경우 해결x
 
+# sudoku = []
+# for _ in range(9):
+#     sudoku.append(list(map(int,input().split())))
+
+# def find(sudoku, x,y):
+#     while y<9:
+#         if sudoku[y][x]:
+#             x,y = (x+1)%9, y+(x+1)//9
+#         else:
+#             break
+
+#     if y==9:
+#         return sudoku
+#     nx,ny = (x+1)%9, y+(x+1)//9
+#     sudoku = [s.copy() for s in sudoku]
+#     cand = set(range(1,10))
+
+#     # check horizontal
+#     cand -= set(sudoku[y])
+
+#     # check vertical
+#     v = set()
+#     for i in range(9):
+#         v.add(sudoku[i][x])
+#     cand -= v
+
+#     # check box
+#     b = set()
+#     box_x = (x//3)*3
+#     box_y = (y//3)*3
+
+#     for i in range(3):
+#         for j in range(3):
+#             b.add(sudoku[box_y+j][box_x+i])
+#     cand -= b
+#     for c in cand:
+#         sudoku[y][x] = c
+#         ret = find(sudoku, nx, ny)
+#         if ret:
+#             return ret
+
+#     return False
+
+# sudoku = find(sudoku, 0,0)
+
+# for line in sudoku:
+#     print(" ".join(map(str,line)))
+
+# # 시간 초과?
+
+import sys
+input = sys.stdin.readline
 sudoku = []
 for _ in range(9):
-    sudoku.append(list(map(int,input().split())))
+    sudoku.append(list(map(int, input().split())))
 
-def find(sudoku, x,y):
-    while y<9:
-        if sudoku[y][x]:
-            x,y = (x+1)%9, y+(x+1)//9
-        else:
-            break
+#check
+h_list = []
+v_list = []
+box_list = []
+temp = set(i for i in range(1,10))
+for i in range(9):
+    # v check
+    v_list.append(temp - set(sudoku[i]))
 
-    if y==9:
-        return sudoku
-    nx,ny = (x+1)%9, y+(x+1)//9
-    sudoku = [s.copy() for s in sudoku]
-    cand = set(range(1,10))
+    # h check
+    htemp = set()
+    for j in range(9):
+        htemp.add(sudoku[j][i])
+    h_list.append(temp - htemp)
 
-    # check horizontal
-    cand -= set(sudoku[y])
+    # box check
+    btemp = set()
+    bx,by = i%3, i//3
+    for j in range(9):
+        bxx,byy = j%3, j//3
+        btemp.add(sudoku[3*by+byy][3*bx+bxx])
+    box_list.append(temp-btemp)
 
-    # check vertical
-    v = set()
-    for i in range(9):
-        v.add(sudoku[i][x])
-    cand -= v
+cand = []
+for i in range(9):
+    for j in range(9):
+        if sudoku[i][j]==0:
+            v = v_list[i]
+            h = h_list[j]
+            b = box_list[(j//3)*3 + (i//3)]
 
-    # check box
-    b = set()
-    box_x = (x//3)*3
-    box_y = (y//3)*3
-
-    for i in range(3):
-        for j in range(3):
-            b.add(sudoku[box_y+j][box_x+i])
-    cand -= b
-    for c in cand:
-        sudoku[y][x] = c
-        ret = find(sudoku, nx, ny)
-        if ret:
-            return ret
-
-    return False
-
-sudoku = find(sudoku, 0,0)
-
-for line in sudoku:
-    print(" ".join(map(str,line)))
-
-# 시간 초과?
+            now = v.intersection(h).intersection(b)
+            if len(now)==1:
+                n = now.pop()
+                v.remove(n)
+                h.remove(n)
+                b.remove(n)
+                sudoku[i][j] = n
+print(sudoku)
